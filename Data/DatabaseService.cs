@@ -1,5 +1,5 @@
+using Npgsql;
 using Dapper;
-using Microsoft.Data.Sqlite;
 using BRIGOLE_SitInManagement.Models;
 
 namespace BRIGOLE_SitInManagement.Data
@@ -10,11 +10,12 @@ namespace BRIGOLE_SitInManagement.Data
 
         public DatabaseService(IConfiguration config)
         {
-            var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "sitin.db");
-            _connectionString = $"Data Source={dbPath}";
+            _connectionString = config.GetConnectionString("DefaultConnection")
+                ?? throw new Exception("No connection string found!");
         }
 
-        public SqliteConnection GetConnection() => new SqliteConnection(_connectionString);
+        public NpgsqlConnection GetConnection() =>
+     new NpgsqlConnection(_connectionString);
 
         public void InitializeDatabase()
         {
