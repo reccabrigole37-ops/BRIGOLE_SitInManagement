@@ -1,0 +1,75 @@
+@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="hero-section">
+    <div class="position-relative" style="z-index:1">
+        <div style="font-size:0.85rem; color:var(--ccs-gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:0.5rem;">
+            University of Cebu — College of Computer Studies
+        </div>
+        <h1>CCS <span class="gold-text">Sit-In</span><br />Monitoring System</h1>
+        <p>Track your lab sessions, manage reservations, and earn reward points.<br />A smarter way to manage computer laboratory usage.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a asp-controller="Account" asp-action="Login" class="btn btn-gold px-4 py-2 fw-bold" style="border-radius:10px;">
+                <i class="fas fa-sign-in-alt me-2"></i>Login
+            </a>
+            <a asp-controller="Account" asp-action="Register" class="btn btn-outline-light px-4 py-2 fw-bold" style="border-radius:10px;">
+                <i class="fas fa-user-plus me-2"></i>Register
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="ccs-card h-100 text-center p-4">
+                <div style="width:60px;height:60px;background:linear-gradient(135deg,var(--ccs-purple),var(--ccs-purple-dark));border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                    <i class="fas fa-desktop text-white fa-xl"></i>
+                </div>
+                <h5 class="fw-bold" style="color:var(--ccs-purple)">Session Tracking</h5>
+                <p class="text-muted small">Monitor your remaining sit-in sessions and view your complete usage history in real-time.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="ccs-card h-100 text-center p-4">
+                <div style="width:60px;height:60px;background:linear-gradient(135deg,var(--ccs-gold),#e09500);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                    <i class="fas fa-calendar-check fa-xl" style="color:var(--ccs-purple-dark)"></i>
+                </div>
+                <h5 class="fw-bold" style="color:var(--ccs-purple)">PC Reservations</h5>
+                <p class="text-muted small">Reserve a computer unit in advance. Get approved by the administrator before your session.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="ccs-card h-100 text-center p-4">
+                <div style="width:60px;height:60px;background:linear-gradient(135deg,var(--ccs-purple),var(--ccs-purple-dark));border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                    <i class="fas fa-trophy text-white fa-xl"></i>
+                </div>
+                <h5 class="fw-bold" style="color:var(--ccs-purple)">Rewards System</h5>
+                <p class="text-muted small">Earn points for your lab participation and compete on the leaderboard with other students.</p>
+            </div>
+        </div>
+    </div>
+
+    @if (ViewBag.Announcements != null)
+    {
+        var announcements = ViewBag.Announcements as List<BRIGOLE_SitInManagement.Models.Announcement>;
+        if (announcements?.Any() == true)
+        {
+            <h5 class="fw-bold mb-3" style="color:var(--ccs-purple)"><i class="fas fa-bullhorn me-2"></i>Latest Announcements</h5>
+            <div class="row g-3">
+                @foreach (var a in announcements)
+                {
+                    <div class="col-md-4">
+                        <div class="ccs-card p-3">
+                            <div class="fw-semibold mb-1">@a.Title</div>
+                            <div class="text-muted small">@a.Content</div>
+                            <div class="text-muted mt-2" style="font-size:0.75rem"><i class="far fa-clock me-1"></i>@a.CreatedAt.ToString("MMM dd, yyyy")</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>

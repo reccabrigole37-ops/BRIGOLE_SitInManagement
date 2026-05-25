@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "Community";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var leaderboard = ViewBag.Leaderboard as List<BRIGOLE_SitInManagement.Models.Student> ?? new();
+    var announcements = ViewBag.Announcements as List<BRIGOLE_SitInManagement.Models.Announcement> ?? new();
+}
+
+<div style="background:linear-gradient(135deg,var(--ccs-purple-dark),var(--ccs-purple)); color:white; padding:3rem 2rem; text-align:center;">
+    <h2 class="fw-bold">Community</h2>
+    <p class="text-white-50">Student leaderboard & latest announcements</p>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <h5 class="fw-bold mb-3" style="color:var(--ccs-purple)"><i class="fas fa-trophy me-2" style="color:var(--ccs-gold)"></i>Points Leaderboard</h5>
+            <div class="ccs-card">
+                <table class="table ccs-table mb-0">
+                    <thead><tr><th>Rank</th><th>Student</th><th>Course</th><th>Points</th></tr></thead>
+                    <tbody>
+                        @for (int i = 0; i < leaderboard.Count; i++)
+                        {
+                            var s = leaderboard[i];
+                            int rank = i + 1;
+                            string rankIcon = rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : $"#{rank}";
+                            <tr class="leaderboard-row rank-@rank">
+                                <td>@rankIcon</td>
+                                <td class="fw-semibold">@s.FullName</td>
+                                <td>@s.Course</td>
+                                <td><span class="points-badge">⭐ @s.Points</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @if (!leaderboard.Any())
+                {
+                    <div class="p-4 text-center text-muted">No students yet</div>
+                }
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <h5 class="fw-bold mb-3" style="color:var(--ccs-purple)"><i class="fas fa-bullhorn me-2"></i>Announcements</h5>
+            @foreach (var a in announcements)
+            {
+                <div class="ccs-card mb-3 p-3">
+                    <div class="fw-semibold mb-1">@a.Title</div>
+                    <div class="text-muted small">@a.Content</div>
+                    <div class="text-muted mt-2" style="font-size:0.75rem">@a.CreatedAt.ToString("MMM dd, yyyy")</div>
+                </div>
+            }
+            @if (!announcements.Any())
+            {
+                <div class="ccs-card p-4 text-center text-muted">No announcements</div>
+            }
+        </div>
+    </div>
+</div>

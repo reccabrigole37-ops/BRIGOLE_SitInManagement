@@ -1,0 +1,124 @@
+@model List<BRIGOLE_SitInManagement.Models.SitInRecord>
+@{
+    ViewData["Title"] = "Analytics";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard-layout">
+    <div class="sidebar">
+        <div class="sidebar-user">
+            <div class="user-avatar" style="background:var(--ccs-gold)"><i class="fas fa-user-shield"></i></div>
+            <div class="user-name">@User.Identity?.Name</div>
+            <div class="user-id" style="color:rgba(255,255,255,0.5)">Administrator</div>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="nav-link" asp-controller="Admin" asp-action="Dashboard"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="SitInRecords"><i class="fas fa-list-alt"></i>Sit-in Records</a>
+            <a class="nav-link active" asp-controller="Admin" asp-action="Analytics"><i class="fas fa-chart-pie"></i>Analytics</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="StudentList"><i class="fas fa-users"></i>Student List</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Leaderboard"><i class="fas fa-trophy"></i>Leaderboard</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Announcements"><i class="fas fa-bullhorn"></i>Announcements</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Reservations"><i class="fas fa-calendar-check"></i>Reservations</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Feedback"><i class="fas fa-comment-dots"></i>Feedback</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="ExportCsv"><i class="fas fa-file-csv"></i>Export CSV</a>
+            <a class="nav-link" asp-controller="Account" asp-action="Logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
+        </nav>
+    </div>
+    <div class="dashboard-content">
+        <h4 class="fw-bold mb-4" style="color:var(--ccs-purple)"><i class="fas fa-chart-pie me-2"></i>Analytics</h4>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">@ViewBag.TotalStudents</div>
+                    <div class="stat-label">Total Students</div>
+                    <i class="fas fa-users stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">@ViewBag.TotalRecords</div>
+                    <div class="stat-label">Total Sit-in Sessions</div>
+                    <i class="fas fa-desktop stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">@ViewBag.TodayRecords</div>
+                    <div class="stat-label">Sessions Today</div>
+                    <i class="fas fa-calendar-day stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">@ViewBag.WeekRecords</div>
+                    <div class="stat-label">Sessions This Week</div>
+                    <i class="fas fa-calendar-week stat-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <div class="ccs-card">
+                    <div class="ccs-card-header"><i class="fas fa-bullseye me-2"></i>Sessions by Purpose</div>
+                    <div class="p-3">
+                        @{
+                            var byPurpose = ViewBag.ByPurpose as IEnumerable<dynamic>;
+                            int totalCount = (int)ViewBag.TotalRecords;
+                        }
+                        @if (byPurpose != null)
+                        {
+                            @foreach (var p in byPurpose)
+                            {
+                                int pct = totalCount > 0 ? (int)((p.Count / (double)totalCount) * 100) : 0;
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between small mb-1">
+                                        <span class="fw-semibold">@p.Purpose</span>
+                                        <span class="text-muted">@p.Count sessions (@pct%)</span>
+                                    </div>
+                                    <div class="progress" style="height:8px; border-radius:8px;">
+                                        <div class="progress-bar" role="progressbar"
+                                             style="width:@pct%; background:linear-gradient(90deg, var(--ccs-purple), var(--ccs-gold));"
+                                             aria-valuenow="@pct" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        @if (totalCount == 0)
+                        {
+                            <div class="text-center text-muted py-3"><i class="fas fa-chart-bar fa-2x mb-2 d-block"></i>No data available</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="ccs-card">
+                    <div class="ccs-card-header"><i class="fas fa-clock me-2"></i>Recent Activity Log</div>
+                    <div style="max-height:350px; overflow-y:auto;">
+                        @foreach (var r in Model.Take(15))
+                        {
+                            <div class="p-3 border-bottom d-flex align-items-center gap-3">
+                                <div class="@(r.IsActive ? "text-success" : "text-muted")" style="font-size:0.7rem"><i class="fas fa-circle"></i></div>
+                                <div>
+                                    <div class="small fw-semibold">@r.StudentName</div>
+                                    <div class="text-muted" style="font-size:0.77rem">PC #@r.PcNumber — @r.Purpose — @r.TimeIn.ToString("MMM dd, h:mm tt")</div>
+                                </div>
+                                @if (r.IsActive)
+                                {
+                                    <span class="ms-auto status-active">Active</span>
+                                }
+                            </div>
+                        }
+                        @if (!Model.Any())
+                        {
+                            <div class="p-4 text-center text-muted">No activity yet</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

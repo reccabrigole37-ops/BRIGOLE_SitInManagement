@@ -1,0 +1,58 @@
+@{
+    ViewData["Title"] = "About";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="background:linear-gradient(135deg,var(--ccs-purple-dark),var(--ccs-purple)); color:white; padding:3rem 2rem; text-align:center;">
+    <h2 class="fw-bold">About the System</h2>
+    <p class="text-white-50">CCS Sit-In Monitoring System</p>
+</div>
+
+<div class="container py-5" style="max-width:800px;">
+    <div class="ccs-card p-4 mb-4">
+        <h5 class="fw-bold mb-3" style="color:var(--ccs-purple)"><i class="fas fa-info-circle me-2"></i>System Overview</h5>
+        <p>The <strong>CCS Sit-In Monitoring System</strong> is a web-based application developed for the College of Computer Studies to efficiently manage and monitor student laboratory usage.</p>
+        <p class="mb-0">The system provides a streamlined process for tracking sit-in sessions, managing PC reservations, and rewarding student participation — replacing manual logbooks with a digital solution.</p>
+    </div>
+
+    <div class="ccs-card p-4 mb-4">
+        <h5 class="fw-bold mb-3" style="color:var(--ccs-purple)"><i class="fas fa-star me-2"></i>Key Features</h5>
+        <div class="row g-3">
+            @{
+                var features = new[] {
+                    ("fa-user-graduate", "Student Registration & Login", "Secure account creation with student ID verification"),
+                    ("fa-desktop", "Sit-in Session Management", "Real-time tracking of active and completed sessions"),
+                    ("fa-calendar-check", "PC Reservation System", "Advance booking with admin approval workflow"),
+                    ("fa-bullhorn", "Announcements", "Admin can broadcast important notices to all students"),
+                    ("fa-trophy", "Rewards & Leaderboard", "Points-based incentive system to encourage participation"),
+                    ("fa-file-csv", "Report Generation", "Export session records to CSV for analysis")
+                };
+                foreach (var f in features)
+                {
+                    <div class="col-md-6">
+                        <div class="d-flex gap-3">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--ccs-purple),var(--ccs-purple-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <i class="fas @f.Item1 text-white"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold small">@f.Item2</div>
+                                <div class="text-muted" style="font-size:0.8rem">@f.Item3</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="ccs-card p-4">
+        <h5 class="fw-bold mb-2" style="color:var(--ccs-purple)"><i class="fas fa-code me-2"></i>Technical Information</h5>
+        <table class="table table-sm mb-0">
+            <tr><td class="text-muted small">Framework</td><td>ASP.NET Core MVC (.NET 10)</td></tr>
+            <tr><td class="text-muted small">Database</td><td>SQLite via Dapper</td></tr>
+            <tr><td class="text-muted small">Project</td><td>BRIGOLE_SitInManagement</td></tr>
+            <tr><td class="text-muted small">Version</td><td>1.0.0</td></tr>
+            <tr><td class="text-muted small">© Year</td><td>@DateTime.Now.Year</td></tr>
+        </table>
+    </div>
+</div>

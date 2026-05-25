@@ -1,0 +1,80 @@
+@model List<BRIGOLE_SitInManagement.Models.SitInRecord>
+@{
+    ViewData["Title"] = "Sit-In Records";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard-layout">
+    <div class="sidebar">
+        <div class="sidebar-user">
+            <div class="user-avatar" style="background:var(--ccs-gold)"><i class="fas fa-user-shield"></i></div>
+            <div class="user-name">@User.Identity?.Name</div>
+            <div class="user-id" style="color:rgba(255,255,255,0.5)">Administrator</div>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="nav-link" asp-controller="Admin" asp-action="Dashboard"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+            <a class="nav-link active" asp-controller="Admin" asp-action="SitInRecords"><i class="fas fa-list-alt"></i>Sit-in Records</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Analytics"><i class="fas fa-chart-pie"></i>Analytics</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="StudentList"><i class="fas fa-users"></i>Student List</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Leaderboard"><i class="fas fa-trophy"></i>Leaderboard</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Announcements"><i class="fas fa-bullhorn"></i>Announcements</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Reservations"><i class="fas fa-calendar-check"></i>Reservations</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Feedback"><i class="fas fa-comment-dots"></i>Feedback</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="ExportCsv"><i class="fas fa-file-csv"></i>Export CSV</a>
+            <a class="nav-link" asp-controller="Account" asp-action="Logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
+        </nav>
+    </div>
+    <div class="dashboard-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 class="fw-bold mb-0" style="color:var(--ccs-purple)">Sit-In Records</h4>
+                <small class="text-muted">Total: @Model.Count records</small>
+            </div>
+            <a asp-controller="Admin" asp-action="ExportCsv" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-download me-1"></i>Export CSV
+            </a>
+        </div>
+
+        <div class="ccs-card">
+            <div class="ccs-card-header d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-database me-2"></i>All Records</span>
+                <form method="get" class="d-flex gap-2">
+                    <input name="search" value="@ViewBag.Search" class="form-control form-control-sm" placeholder="Search..." style="width:200px" />
+                    <button type="submit" class="btn btn-sm btn-gold"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="table-responsive">
+                <table class="table ccs-table mb-0">
+                    <thead>
+                        <tr><th>ID</th><th>Student ID</th><th>Name</th><th>Course</th><th>PC</th><th>Purpose</th><th>Time In</th><th>Time Out</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model)
+                        {
+                            <tr>
+                                <td>@r.Id</td>
+                                <td><code>@r.StudentIdNumber</code></td>
+                                <td>@r.StudentName</td>
+                                <td>@r.Course</td>
+                                <td>PC #@r.PcNumber</td>
+                                <td>@r.Purpose</td>
+                                <td>@r.TimeIn.ToString("MMM dd h:mm tt")</td>
+                                <td>@(r.TimeOut.HasValue ? r.TimeOut.Value.ToString("MMM dd h:mm tt") : "-")</td>
+                                <td>
+                                    @if (r.IsActive)
+                                    {
+                                        <span class="status-active">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Done</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+@model BRIGOLE_SitInManagement.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="register-page">
+    <div class="register-card">
+        <div class="register-left">
+            <img src="~/images/ccs-logo.png" alt="CCS" onerror="this.outerHTML='<div style=\'font-size:5rem;color:gold\'>🎓</div>'" />
+            <div style="color:rgba(255,255,255,0.7); font-size:0.9rem; margin-top:1rem; text-align:center">
+                <p class="mb-0" style="color:var(--ccs-gold); font-weight:700">CCS Sit-In System</p>
+                <small>Register to get started</small>
+            </div>
+        </div>
+        <div class="register-right">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h4 class="mb-0" style="color:var(--ccs-purple); font-weight:700">REGISTRATION</h4>
+                    <p class="text-muted small mb-0">Sign Up</p>
+                </div>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Back
+                </a>
+            </div>
+
+            <div asp-validation-summary="All" class="alert alert-danger small py-2"></div>
+
+            <form asp-action="Register" method="post">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label small fw-semibold">ID Number <span class="text-danger">*</span></label>
+                        <input asp-for="IdNumber" class="form-control" placeholder="e.g. 2021-00001" />
+                        <span asp-validation-for="IdNumber" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Last Name <span class="text-danger">*</span></label>
+                        <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">First Name <span class="text-danger">*</span></label>
+                        <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Middle Name</label>
+                        <input asp-for="MiddleName" class="form-control" placeholder="Middle Name" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Course Level</label>
+                        <input asp-for="CourseLevel" type="number" min="1" max="5" class="form-control" value="1" />
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label small fw-semibold">Course</label>
+                        <select asp-for="Course" class="form-select">
+                            <option value="BSIT">BSIT - Bachelor of Science in Information Technology</option>
+                            <option value="BSCS">BSCS - Bachelor of Science in Computer Science</option>
+                            <option value="BSIS">BSIS - Bachelor of Science in Information Systems</option>
+                            <option value="BSEMC">BSEMC - Bachelor of Science in Entertainment & Multimedia Computing</option>
+                            <option value="ACT">ACT - Associate in Computer Technology</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Password <span class="text-danger">*</span></label>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Min. 6 characters" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Repeat Password <span class="text-danger">*</span></label>
+                        <input asp-for="RepeatPassword" type="password" class="form-control" placeholder="Confirm password" />
+                        <span asp-validation-for="RepeatPassword" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Email</label>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="email@example.com" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Address</label>
+                        <input asp-for="Address" class="form-control" placeholder="Current address" />
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-ccs px-4 py-2">
+                        <i class="fas fa-user-plus me-2"></i>Register
+                    </button>
+                    <span class="text-muted small ms-3">Already have an account?
+                        <a asp-controller="Account" asp-action="Login" style="color:var(--ccs-purple)">Login here</a>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

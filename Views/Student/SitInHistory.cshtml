@@ -1,0 +1,81 @@
+@model List<BRIGOLE_SitInManagement.Models.SitInRecord>
+@{
+    ViewData["Title"] = "Sit-in History";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard-layout">
+    <div class="sidebar">
+        <div class="sidebar-user">
+            <div class="user-avatar">@(User.Identity?.Name?.Substring(0,1).ToUpper())</div>
+            <div class="user-name">@User.Identity?.Name</div>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="nav-link" asp-controller="Student" asp-action="Dashboard"><i class="fas fa-home"></i>Dashboard</a>
+            <a class="nav-link" asp-controller="Student" asp-action="EditProfile"><i class="fas fa-user-edit"></i>Edit Profile</a>
+            <a class="nav-link" asp-controller="Student" asp-action="Notifications"><i class="fas fa-bell"></i>Announcements</a>
+            <div class="sidebar-section-title">Lab</div>
+            <a class="nav-link active" asp-controller="Student" asp-action="SitInHistory"><i class="fas fa-history"></i>Sit-in History</a>
+            <a class="nav-link" asp-controller="Student" asp-action="Reservation"><i class="fas fa-calendar-plus"></i>Reserve a PC</a>
+            <a class="nav-link" asp-controller="Student" asp-action="MyReservations"><i class="fas fa-calendar-check"></i>My Reservations</a>
+            <a class="nav-link" asp-controller="Student" asp-action="Rules"><i class="fas fa-book"></i>Rules & Regulations</a>
+            <a class="nav-link" asp-controller="Student" asp-action="Rewards"><i class="fas fa-trophy"></i>Rewards & Points</a>
+            <a class="nav-link" asp-controller="Account" asp-action="Logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
+        </nav>
+    </div>
+    <div class="dashboard-content">
+        <h4 class="fw-bold mb-4" style="color:var(--ccs-purple)"><i class="fas fa-history me-2"></i>Sit-in History</h4>
+
+        <div class="ccs-card">
+            <div class="ccs-card-header"><i class="fas fa-list me-2"></i>All Sessions (@Model.Count)</div>
+            <div class="table-responsive">
+                <table class="table ccs-table mb-0">
+                    <thead>
+                        <tr><th>#</th><th>PC</th><th>Purpose</th><th>Date</th><th>Time In</th><th>Time Out</th><th>Status</th><th>Feedback</th></tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            var r = Model[i];
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>PC #@r.PcNumber</td>
+                                <td>@r.Purpose</td>
+                                <td>@r.TimeIn.ToString("MMM dd, yyyy")</td>
+                                <td>@r.TimeIn.ToString("h:mm tt")</td>
+                                <td>@(r.TimeOut.HasValue ? r.TimeOut.Value.ToString("h:mm tt") : "—")</td>
+                                <td>
+                                    @if (r.IsActive)
+                                    {
+                                        <span class="status-active">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Done</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!r.IsActive && string.IsNullOrEmpty(r.Feedback))
+                                    {
+                                        <a asp-controller="Student" asp-action="SubmitFeedback" asp-route-id="@r.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-comment me-1"></i>Leave Feedback
+                                        </a>
+                                    }
+                                    else if (!string.IsNullOrEmpty(r.Feedback))
+                                    {
+                                        <span class="text-muted small" title="@r.Feedback"><i class="fas fa-check-circle text-success me-1"></i>Submitted</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @if (!Model.Any())
+                {
+                    <div class="p-4 text-center text-muted"><i class="fas fa-desktop fa-2x mb-2 d-block"></i>No sit-in sessions yet</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

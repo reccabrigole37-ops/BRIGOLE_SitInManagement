@@ -1,0 +1,206 @@
+@model BRIGOLE_SitInManagement.Models.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-user">
+            <div class="user-avatar" style="background:var(--ccs-gold)"><i class="fas fa-user-shield"></i></div>
+            <div class="user-name">@User.Identity?.Name</div>
+            <div class="user-id" style="color:rgba(255,255,255,0.5)">Administrator</div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-section-title">Overview</div>
+            <a class="nav-link active" asp-controller="Admin" asp-action="Dashboard"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="SitInRecords"><i class="fas fa-list-alt"></i>Sit-in Records</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Analytics"><i class="fas fa-chart-pie"></i>Analytics</a>
+            <div class="sidebar-section-title">Students</div>
+            <a class="nav-link" asp-controller="Admin" asp-action="StudentList"><i class="fas fa-users"></i>Student List</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Leaderboard"><i class="fas fa-trophy"></i>Leaderboard</a>
+            <div class="sidebar-section-title">Content</div>
+            <a class="nav-link" asp-controller="Admin" asp-action="Announcements"><i class="fas fa-bullhorn"></i>Announcements</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Reservations"><i class="fas fa-calendar-check"></i>Reservations</a>
+            <a class="nav-link" asp-controller="Admin" asp-action="Feedback"><i class="fas fa-comment-dots"></i>Feedback</a>
+            <div class="sidebar-section-title">Reports</div>
+            <a class="nav-link" asp-controller="Admin" asp-action="ExportCsv"><i class="fas fa-file-csv"></i>Export CSV</a>
+            <div class="sidebar-section-title">Account</div>
+            <a class="nav-link" asp-controller="Account" asp-action="Logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
+        </nav>
+    </div>
+
+    <!-- Content -->
+    <div class="dashboard-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 class="fw-bold mb-0" style="color:var(--ccs-purple)">Admin Dashboard</h4>
+                <small class="text-muted">CCS Sit-In Monitoring System</small>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-controller="Admin" asp-action="ExportCsv" class="btn btn-sm btn-outline-secondary"><i class="fas fa-download me-1"></i>Export CSV</a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number">@Model.TotalStudents</div>
+                    <div class="stat-label">Total Students</div>
+                    <i class="fas fa-users stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number" style="color:var(--ccs-success)">@Model.CurrentSitIns</div>
+                    <div class="stat-label">Currently Sitting In</div>
+                    <i class="fas fa-desktop stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number">@Model.TotalSitInsToday</div>
+                    <div class="stat-label">Sit-ins Today</div>
+                    <i class="fas fa-chart-line stat-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Sit-In Form -->
+        <div class="ccs-card mb-4">
+            <div class="ccs-card-header"><i class="fas fa-sign-in-alt me-2"></i>Quick Sit-In</div>
+            <div class="p-3">
+                <form asp-controller="Admin" asp-action="SitInStudent" method="post" class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-semibold">Student ID Number</label>
+                        <input name="IdNumber" class="form-control" placeholder="e.g. 2021-00001" required />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-semibold">PC Number</label>
+                        <input name="PcNumber" type="number" min="1" max="50" class="form-control" placeholder="1-50" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Purpose</label>
+                        <select name="Purpose" class="form-select" required>
+                            <option value="">-- Select Purpose --</option>
+                            <option>C Programming</option>
+                            <option>Java Programming</option>
+                            <option>Web Development</option>
+                            <option>Database</option>
+                            <option>Research / Thesis</option>
+                            <option>Online Class</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-ccs w-100"><i class="fas fa-check me-1"></i>Check In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <!-- Current Sessions -->
+            <div class="col-lg-8">
+                <div class="ccs-card">
+                    <div class="ccs-card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-desktop me-2"></i>Current Sit-in Sessions <span class="badge bg-light text-dark ms-2">@Model.CurrentSessions.Count</span></span>
+                        @if (Model.CurrentSessions.Any())
+                        {
+                            <form asp-controller="Admin" asp-action="EndAllSessions" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('End all active sessions?')">
+                                    <i class="fas fa-times me-1"></i>End All
+                                </button>
+                            </form>
+                        }
+                    </div>
+                    @if (Model.CurrentSessions.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table ccs-table mb-0">
+                                <thead><tr><th>#</th><th>ID</th><th>Name</th><th>Course</th><th>PC</th><th>Purpose</th><th>Time In</th><th>Action</th></tr></thead>
+                                <tbody>
+                                    @foreach (var r in Model.CurrentSessions)
+                                    {
+                                        <tr>
+                                            <td>@r.Id</td>
+                                            <td><code>@r.StudentIdNumber</code></td>
+                                            <td>@r.StudentName</td>
+                                            <td><span class="badge bg-secondary">@r.Course</span></td>
+                                            <td><strong>PC #@r.PcNumber</strong></td>
+                                            <td>@r.Purpose</td>
+                                            <td>@r.TimeIn.ToString("h:mm tt")</td>
+                                            <td>
+                                                <form asp-controller="Admin" asp-action="EndSitIn" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@r.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-sign-out-alt"></i></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted"><i class="fas fa-couch fa-2x mb-2 d-block"></i>No active sessions</div>
+                    }
+                </div>
+            </div>
+
+            <!-- Pending Reservations -->
+            <div class="col-lg-4">
+                <div class="ccs-card">
+                    <div class="ccs-card-header"><i class="fas fa-calendar-alt me-2"></i>Pending Reservations</div>
+                    @if (Model.PendingReservations.Any())
+                    {
+                        @foreach (var r in Model.PendingReservations)
+                        {
+                            <div class="p-3 border-bottom">
+                                <div class="fw-semibold small">@r.StudentName</div>
+                                <div class="text-muted" style="font-size:0.78rem">PC #@r.PcNumber — @r.Purpose</div>
+                                <div class="text-muted" style="font-size:0.78rem">@r.ReservationDate.ToString("MMM dd")</div>
+                                <div class="mt-2 d-flex gap-1">
+                                    <form asp-controller="Admin" asp-action="ApproveReservation" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@r.Id" />
+                                        <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
+                                    </form>
+                                    <form asp-controller="Admin" asp-action="DenyReservation" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@r.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted small">No pending reservations</div>
+                    }
+                </div>
+
+                <!-- Latest Announcements -->
+                <div class="ccs-card mt-3">
+                    <div class="ccs-card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-bullhorn me-2"></i>Announcements</span>
+                        <a asp-controller="Admin" asp-action="Announcements" class="btn btn-sm btn-gold">Manage</a>
+                    </div>
+                    @foreach (var a in Model.Announcements)
+                    {
+                        <div class="p-3 border-bottom">
+                            <div class="fw-semibold small">@a.Title</div>
+                            <div class="text-muted" style="font-size:0.78rem">@a.CreatedAt.ToString("MMM dd, yyyy")</div>
+                        </div>
+                    }
+                    @if (!Model.Announcements.Any())
+                    {
+                        <div class="p-3 text-center text-muted small">No announcements</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
